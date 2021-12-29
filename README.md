@@ -96,7 +96,7 @@ WantedBy=multi-user.target
   - sudo systemctl stop prometheus
   - cd
   - sudo vim /etc/prometheus/prometheus.yml
-    `Un-comment alertmanager, and change alertmanager to localhost (so it will look like the following):`
+    - Un-comment alertmanager, and change alertmanager to localhost (so it will look like the following):
 ```
 alerting:
   alertmanagers:
