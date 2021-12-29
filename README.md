@@ -2,6 +2,9 @@
 Here we will setup a monitoring solution by installing **Prometheus, Alertmanager, and Grafana**, and ensure metrics from all three services are being fed into Prometheus. 
 As we install Prometheus and Alertmanager, we'll also configure our environment to easily and effectively change our configurations without any added work.
 
+![setting-up-and-adding-endpoints](https://user-images.githubusercontent.com/24545531/147657149-773ac577-bf85-4321-8484-b46f3267a471.jpg)
+
+
 # Set Up Prometheus
 - Create a monitoring server for **Prometheus** and **Alert Manager**. 
 - On the monitoring server, create a user for `Prometheus`:
