@@ -4,7 +4,7 @@ As we install Prometheus and Alertmanager, we'll also configure our environment 
 
 # Set Up Prometheus
 - Create a monitoring server for **Prometheus** and **Alert Manager**. 
-- On the monitoring server, create a user for Prometheus:
+- On the monitoring server, create a user for `Prometheus`:
   - sudo useradd --no-create-home --shell /bin/false prometheus
 - Create the needed directories:
   - mkdir -p /etc/prometheus /var/lib/prometheus
@@ -74,6 +74,7 @@ WantedBy=multi-user.target
 - Create the alertmanager.service file for systemd:
   - sudo vim /etc/systemd/system/alertmanager.service
   - Add the following to the file, save and exit:
+
 ```
 [Unit]
 Description=Alertmanager
@@ -97,7 +98,7 @@ WantedBy=multi-user.target
   - cd
   - sudo vim /etc/prometheus/prometheus.yml
     - Un-comment alertmanager, and change alertmanager to localhost (so it will look like the following):
-    - 
+
 ```
 alerting:
   alertmanagers:
@@ -115,7 +116,7 @@ alerting:
   - sudo systemctl enable alertmanager
 
 # Set Up Grafana
-Create a new server for Grafana, log in to the grafana server via SSH:
+Create a new server for `Grafana`, log in to the grafana server via SSH:
 
 - Install the prerequisite package:
   - sudo apt-get install libfontconfig
@@ -131,12 +132,12 @@ Create a new server for Grafana, log in to the grafana server via SSH:
 
 - Add a Data Source
   - Click `Add data source` on the home page. Select `Prometheus`.
-  - In the HTTP section, set the URL to `http://<MONITORING_SERVER_IP_ADDRESS>:9090`
+  - In the `HTTP` section, set the URL to `http://<MONITORING_SERVER_IP_ADDRESS>:9090`
   - Click Save & Test.
 
 - Add Alert Manager and Grafana Endpoints in the Prometheus configuration file:
-  - sudo vim /etc/prometheus/prometheus.yml
-    At the end of the file, at the bottom of the `scrape_configs` section, add the Alertmanager endpoint (make sure it aligns with the - job_name: 'prometheus' line):
+  `sudo vim /etc/prometheus/prometheus.yml`
+  - At the end of the file, at the bottom of the `scrape_configs` section, add the Alertmanager endpoint (make sure it aligns with the - job_name: 'prometheus' line):
     
 ```
 - job_name: 'alertmanager'
@@ -152,6 +153,6 @@ Create a new server for Grafana, log in to the grafana server via SSH:
   - sudo systemctl restart prometheus
   - sudo systemctl status prometheus
 - Navigate to the Prometheus web UI in a new browser tab: `http://<MONITORING_IP_ADDRESS>:9090`
-  - Click Status > Targets.
+  - Click `Status` > `Targets`.
 
 Ensure all three endpoints are listed on the Targets page.
