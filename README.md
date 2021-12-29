@@ -97,12 +97,14 @@ WantedBy=multi-user.target
   - cd
   - sudo vim /etc/prometheus/prometheus.yml
     - Un-comment alertmanager, and change alertmanager to localhost (so it will look like the following):
+    - 
 ```
 alerting:
   alertmanagers:
     - static_configs:
       - targets:
-        - localhost:9093```
+        - localhost:9093
+ ```
 
 - Reload systemd, and then start the prometheus and alertmanager services:
   - sudo systemctl daemon-reload
@@ -135,6 +137,7 @@ Create a new server for Grafana, log in to the grafana server via SSH:
 - Add Alert Manager and Grafana Endpoints in the Prometheus configuration file:
   - sudo vim /etc/prometheus/prometheus.yml
     At the end of the file, at the bottom of the `scrape_configs` section, add the Alertmanager endpoint (make sure it aligns with the - job_name: 'prometheus' line):
+    
 ```
 - job_name: 'alertmanager'
   static_configs:
