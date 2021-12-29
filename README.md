@@ -1,9 +1,9 @@
 # Setting Up Prometheus and Adding Endpoints
-Here we will setup a monitoring solution by installing Prometheus, Alertmanager, and Grafana, and ensure metrics from all three services are being fed into Prometheus. 
+Here we will setup a monitoring solution by installing **Prometheus, Alertmanager, and Grafana**, and ensure metrics from all three services are being fed into Prometheus. 
 As we install Prometheus and Alertmanager, we'll also configure our environment to easily and effectively change our configurations without any added work.
 
 # Set Up Prometheus
-- Create a monitoring server for Prometheus and Alert manager. 
+- Create a monitoring server for **Prometheus** and **Alert Manager**. 
 - On the monitoring server, create a user for Prometheus:
   - sudo useradd --no-create-home --shell /bin/false prometheus
 - Create the needed directories:
@@ -63,13 +63,10 @@ WantedBy=multi-user.target
 - Extract the files:
   - tar -xvf alertmanager-0.16.1.linux-amd64.tar.gz
   - cd alertmanager-0.16.1.linux-amd64/
-
 - Move the binaries:
   - sudo mv alertmanager amtool /usr/local/bin/
-
 - Set the ownership of the binaries:
   - sudo chown -R alertmanager:alertmanager /usr/local/bin/alertmanager /usr/local/bin/amtool
-
 - Move the configuration file into the /etc/alertmanager directory:
   - sudo mv alertmanager.yml /etc/alertmanager/
 - Set the ownership of the /etc/alertmanager directory:
@@ -116,60 +113,42 @@ alerting:
   - sudo systemctl enable alertmanager
 
 # Set Up Grafana
-Create a new server for , log in to the grafana server via SSH using the credentials provided on the lab page:
+Create a new server for Grafana, log in to the grafana server via SSH:
 
-ssh cloud_user@<GRAFANA_SERVER_PUBLIC_IP_ADDRESS>
-Install the prerequisite package:
+- Install the prerequisite package:
+  - sudo apt-get install libfontconfig
+- Download and install Grafana using the .deb package provided on the Grafana download page:
+  - cd /tmp/
+  - wget https://dl.grafana.com/oss/release/grafana_5.4.3_amd64.deb
+  - sudo dpkg -i grafana_5.4.3_amd64.deb
+- Start and enable Grafana service:
+  - sudo systemctl start grafana-server
+  - sudo systemctl enable grafana-server
+- Access Grafana's web UI by navigating to `<GRAFANA_IP_ADDRESS>:3000` in a new browser tab.
+- Log in with the username `admin` and the password `admin`. Reset the password when prompted.
 
-sudo apt-get install libfontconfig
-Download and install Grafana using the .deb package provided on the Grafana download page:
+- Add a Data Source
+  - Click `Add data source` on the home page. Select `Prometheus`.
+  - In the HTTP section, set the URL to `http://<MONITORING_SERVER_IP_ADDRESS>:9090`
+  - Click Save & Test.
 
-cd /tmp/
-wget https://dl.grafana.com/oss/release/grafana_5.4.3_amd64.deb
-sudo dpkg -i grafana_5.4.3_amd64.deb
-Start Grafana:
-
-sudo systemctl start grafana-server
-Ensure Grafana starts at boot:
-
-sudo systemctl enable grafana-server
-Using the Grafana IP address listed on the lab page, access Grafana's web UI by navigating to <GRAFANA_IP_ADDRESS>:3000 in a new browser tab.
-
-Log in with the username admin and the password admin. Reset the password when prompted.
-
-Add a Data Source
-Click Add data source on the home page.
-
-Select Prometheus.
-
-In the HTTP section, set the URL to http://<MONITORING_IP_ADDRESS>:9090 (using the public IP of the monitoring server provided on the lab page).
-
-Click Save & Test.
-
-Add Endpoints
-Back in the monitoring server terminal, open the Prometheus configuration file:
-
-sudo vim /etc/prometheus/prometheus.yml
-At the end of the file, at the bottom of the scrape_configs section, add the Alertmanager endpoint (make sure it aligns with the - job_name: 'prometheus' line):
-
+- Add Alert Manager and Grafana Endpoints in the Prometheus configuration file:
+  - sudo vim /etc/prometheus/prometheus.yml
+    At the end of the file, at the bottom of the `scrape_configs` section, add the Alertmanager endpoint (make sure it aligns with the - job_name: 'prometheus' line):
+```
 - job_name: 'alertmanager'
   static_configs:
   - targets: ['localhost:9093']
-Beneath what you just added, add the Grafana endpoint (using the public IP address of the grafana server):
 
 - job_name: 'grafana'
   static_configs:
   - targets: ['<GRAFANA_IP_ADDRESS>:3000']
-Save and exit the file by pressing Escape followed by :wq.
+```
 
-Restart Prometheus:
-
-sudo systemctl restart prometheus
-Check its status:
-
-sudo systemctl status prometheus
-Using the public IP address of the monitoring server, navigate to the Prometheus web UI in a new browser tab:http://<MONITORING_IP_ADDRESS>:9090.
-
-Click Status > Targets.
+- Restart Prometheus:
+  - sudo systemctl restart prometheus
+  - sudo systemctl status prometheus
+- Navigate to the Prometheus web UI in a new browser tab: `http://<MONITORING_IP_ADDRESS>:9090`
+  - Click Status > Targets.
 
 Ensure all three endpoints are listed on the Targets page.
